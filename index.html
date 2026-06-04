@@ -366,9 +366,14 @@
                 <label>高速代 (円)</label>
                 <input type="number" id="highwayFee" value="0" min="0" inputmode="numeric">
             </div>
+
+            <div class="form-group">
+                <label>その他諸経費 (駐車場代・温泉代など) (円)</label>
+                <input type="number" id="otherFee" value="0" min="0" inputmode="numeric">
+            </div>
         </div>
 
-        <div id="mycarFields" class="section-box">
+        <div id="gasFields" class="section-box">
             <div class="form-group">
                 <label>ガソリン代計算方法</label>
                 <select id="gasCalcMethod" onchange="toggleGasMethod()">
@@ -433,20 +438,17 @@ let copyTextData = "";
 
 function toggleCarType() {
     const carType = document.querySelector('input[name="carType"]:checked').value;
-    const mycarFields = document.getElementById('mycarFields');
     const rentalFeeGroup = document.getElementById('rentalFeeGroup');
     const memberLabel = document.getElementById('memberLabel');
     const labelMycar = document.getElementById('labelMycar');
     const labelRental = document.getElementById('labelRental');
     
     if (carType === 'mycar') {
-        mycarFields.classList.remove('hidden');
         rentalFeeGroup.classList.add('hidden');
         memberLabel.innerText = "登山メンバー人数 (ドライバー除く)";
         labelMycar.classList.add('active');
         labelRental.classList.remove('active');
     } else {
-        mycarFields.classList.add('hidden');
         rentalFeeGroup.classList.remove('hidden');
         memberLabel.innerText = "全体の合計人数 (ドライバー含む)";
         labelMycar.classList.remove('active');
@@ -468,24 +470,27 @@ function toggleGasMethod() {
 function calculate() {
     const carType = document.querySelector('input[name="carType"]:checked').value;
     const highwayFee = parseFloat(document.getElementById('highwayFee').value) || 0;
+    const otherFee = parseFloat(document.getElementById('otherFee').value) || 0;
     let gasFee = 0;
     let rentalFee = 0;
 
-    if (carType === 'mycar') {
-        const method = document.getElementById('gasCalcMethod').value;
-        if (method === 'estimate') {
-            const distance = parseFloat(document.getElementById('distance').value) || 0;
-            const fuelEconomy = parseFloat(document.getElementById('fuelEconomy').value) || 1;
-            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
-            gasFee = (distance / fuelEconomy) * gasPrice;
-        } else {
-            gasFee = parseFloat(document.getElementById('gasActualField').value) || 0;
-        }
+    // ガソリン代の計算（マイカー・レンタカー共通）
+    const method = document.getElementById('gasCalcMethod').value;
+    if (method === 'estimate') {
+        const distance = parseFloat(document.getElementById('distance').value) || 0;
+        const fuelEconomy = parseFloat(document.getElementById('fuelEconomy').value) || 1;
+        const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
+        gasFee = (distance / fuelEconomy) * gasPrice;
     } else {
+        gasFee = parseFloat(document.getElementById('gasActualField').value) || 0;
+    }
+
+    // レンタカーの場合のみ車両代を加算
+    if (carType === 'rental') {
         rentalFee = parseFloat(document.getElementById('rentalCarFee').value) || 0;
     }
 
-    const totalFee = highwayFee + gasFee + rentalFee;
+    const totalFee = highwayFee + gasFee + rentalFee + otherFee;
     const formattedTotal = Math.round(totalFee).toLocaleString();
     document.getElementById('resTotal').innerText = formattedTotal;
 
