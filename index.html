@@ -353,7 +353,7 @@
 
         <div class="section-box">
             <div class="form-group">
-                <label id="memberLabel">登山メンバー人数 (ドライバー除く)</label>
+                <label id="memberLabel">人数 (ドライバー除く)</label>
                 <input type="number" id="passengerCount" value="3" min="0" inputmode="numeric">
             </div>
 
@@ -368,7 +368,7 @@
             </div>
 
             <div class="form-group">
-                <label>その他諸経費 (駐車場代・温泉代など) (円)</label>
+                <label>その他諸経費 (駐車場代など) (円)</label>
                 <input type="number" id="otherFee" value="0" min="0" inputmode="numeric">
             </div>
         </div>
@@ -445,7 +445,7 @@ function toggleCarType() {
     
     if (carType === 'mycar') {
         rentalFeeGroup.classList.add('hidden');
-        memberLabel.innerText = "登山メンバー人数 (ドライバー除く)";
+        memberLabel.innerText = "人数 (ドライバー除く)";
         labelMycar.classList.add('active');
         labelRental.classList.remove('active');
     } else {
