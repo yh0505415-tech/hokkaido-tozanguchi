@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登山口 北海道 交通費精算ツール</title>
+    <style>
+        :root {
+            --color-bg: #2b3a30;
+            --color-card: #1f2922;
+            --color-text: #f0f3f1;
+            --color-accent: #4a6b53;
+            --color-button: #618b6d;
+            --color-button-hover: #4e7258;
+            --color-highlight: #ff6b6b;
+            --color-input-bg: #2d3b31;
+            --color-border: #3d5244;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--color-card);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            box-sizing: border-box;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+        }
+
+        .header-graphic {
+            position: relative;
+            background: linear-gradient(to bottom, #4a6572, #2b3a30);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--color-border);
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin: 0;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .sub-title {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-content {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .radio-btn {
+            flex: 1;
+            text-align: center;
+            margin: 0;
+            padding: 16px 10px;
+            cursor: pointer;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #324437, #1e2822);
+            border: 2px solid #3d5244;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .radio-btn input {
+            display: none;
+        }
+
+        .icon-badge {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #25332a, #161e19);
+            border: 2px solid #2d3d33;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 2px rgba(255,255,255,0.05);
+            transition: all 0.25s ease;
+        }
+
+        .btn-label-main {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+            transition: color 0.25s ease;
+        }
+        .btn-label-sub {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: -4px;
+            transition: color 0.25s ease;
+        }
+
+        .radio-btn.active {
+            border-color: #8fae97 !important;
+            background: linear-gradient(135deg, #405747, #243329) !important;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .radio-btn.active .icon-badge {
+            background: linear-gradient(135deg, #4d6e56, #2d4535);
+            border-color: #72967b;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.2);
+        }
+
+        .radio-btn.active .btn-label-main {
+            color: #ffffff !important;
+        }
+
+        .radio-btn.active .btn-label-sub {
+            color: #a3b8a8 !important;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            background-color: var(--color-input-bg);
+            color: #ffffff;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #618b6d;
+        }
+
+        select {
+            background: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right 12px center var(--color-input-bg);
+            background-size: 14px;
+            padding-right: 35px;
+        }
+
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .grid-3col label {
+            font-size: 0.75rem;
+            white-space: nowrap;
+            margin-bottom: 4px;
+        }
+
+        .grid-3col input {
+            padding: 10px 6px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        button.btn-submit {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--color-button);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background 0.2s, transform 0.1s;
+            letter-spacing: 1px;
+        }
+
+        button.btn-submit:hover {
+            background-color: var(--color-button-hover);
+        }
+
+        button.btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            background-color: #1a231d;
+            border-radius: 8px;
+            border: 1px solid #344739;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .result h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: #81a189;
+            border-bottom: 1px solid #344739;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .result p {
+            margin: 10px 0;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result p span {
+            font-weight: bold;
+        }
+
+        .highlight {
+            font-size: 1.3rem;
+            color: var(--color-highlight);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .result-meta {
+            font-size: 0.8rem;
+            color: #74887a;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #344739;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-graphic">
+        <h1>登山口 北海道 交通費精算ツール</h1>
+        <div class="sub-title">Hokkaido Trailhead Cost Calculator</div>
+    </div>
+    
+    <div class="form-content">
+        <div class="form-group">
+            <label>移動手段を選択</label>
+            <div class="radio-group">
+                <label id="labelMycar" class="radio-btn active">
+                    <input type="radio" name="carType" value="mycar" checked onchange="toggleCarType()">
+                    <div class="icon-badge">⛰️</div>
+                    <div class="btn-label-main">マイカー</div>
+                    <div class="btn-label-sub">My Car</div>
+                </label>
+                <label id="labelRental" class="radio-btn">
+                    <input type="radio" name="carType" value="rental" onchange="toggleCarType()">
+                    <div class="icon-badge">📍</div>
+                    <div class="btn-label-main">レンタカー</div>
+                    <div class="btn-label-sub">Rental/Share</div>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label id="memberLabel">登山メンバー人数 (ドライバー除く)</label>
+            <input type="number" id="passengerCount" value="3" min="0" inputmode="numeric">
+        </div>
+
+        <div class="form-group hidden" id="rentalFeeGroup">
+            <label>レンタカー費用 (車両代・補償代など)</label>
+            <input type="number" id="rentalCarFee" value="0" min="0" inputmode="numeric">
+        </div>
+
+        <div class="form-group">
+            <label>高速代 (円)</label>
+            <input type="number" id="highwayFee" value="0" min="0" inputmode="numeric">
+        </div>
+
+        <div id="mycarFields">
+            <div class="form-group">
+                <label>ガソリン代計算方法</label>
+                <select id="gasCalcMethod" onchange="toggleGasMethod()">
+                    <option value="estimate" selected>1. 燃費から概算</option>
+                    <option value="actual">2. 実費精算（満タンなど）</option>
+                </select>
+            </div>
+
+            <div id="gasEstimateGroup" class="form-group">
+                <div class="grid-3col">
+                    <div>
+                        <label>走行距離 (km)</label>
+                        <input type="number" id="distance" value="0" min="0" inputmode="numeric">
+                    </div>
+                    <div>
+                        <label>車の燃費 (km/L)</label>
+                        <input type="number" id="fuelEconomy" value="15" min="0.1" step="0.1" inputmode="decimal">
+                    </div>
+                    <div>
+                        <label>ガソリン価格 (円)</label>
+                        <input type="number" id="gasPrice" value="170" min="0" inputmode="numeric">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group hidden" id="gasActualGroup">
+                <label>ガソリン代実費 (円)</label>
+                <input type="number" id="gasActualField" value="0" min="0" inputmode="numeric">
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="calculate()">精算を実行する</button>
+
+        <div class="result" id="resultArea" style="display:none;">
+            <h3>【精算結果】</h3>
+            <p>合計費用: <span><span id="resTotal">0</span> 円</span></p>
+            <div id="resMeta" class="result-meta"></div>
+            <hr>
+            <div id="resDetail"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleCarType() {
+    const carType = document.querySelector('input[name="carType"]:checked').value;
+    const mycarFields = document.getElementById('mycarFields');
+    const rentalFeeGroup = document.getElementById('rentalFeeGroup');
+    const memberLabel = document.getElementById('memberLabel');
+    const labelMycar = document.getElementById('labelMycar');
+    const labelRental = document.getElementById('labelRental');
+    
+    if (carType === 'mycar') {
+        mycarFields.classList.remove('hidden');
+        rentalFeeGroup.classList.add('hidden');
+        memberLabel.innerText = "登山メンバー人数 (ドライバー除く)";
+        labelMycar.classList.add('active');
+        labelRental.classList.remove('active');
+    } else {
+        mycarFields.classList.add('hidden');
+        rentalFeeGroup.classList.remove('hidden');
+        memberLabel.innerText = "全体の合計人数 (ドライバー含む)";
+        labelMycar.classList.remove('active');
+        labelRental.classList.add('active');
+    }
+}
+
+function toggleGasMethod() {
+    const method = document.getElementById('gasCalcMethod').value;
+    if (method === 'estimate') {
+        document.getElementById('gasEstimateGroup').classList.remove('hidden');
+        document.getElementById('gasActualGroup').classList.add('hidden');
+    } else {
+        document.getElementById('gasEstimateGroup').classList.add('hidden');
+        document.getElementById('gasActualGroup').classList.remove('hidden');
+    }
+}
+
+function calculate() {
+    const carType = document.querySelector('input[name="carType"]:checked').value;
+    const highwayFee = parseFloat(document.getElementById('highwayFee').value) || 0;
+    let gasFee = 0;
+    let rentalFee = 0;
+
+    if (carType === 'mycar') {
+        const method = document.getElementById('gasCalcMethod').value;
+        if (method === 'estimate') {
+            const distance = parseFloat(document.getElementById('distance').value) || 0;
+            const fuelEconomy = parseFloat(document.getElementById('fuelEconomy').value) || 1;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
+            gasFee = (distance / fuelEconomy) * gasPrice;
+        } else {
+            gasFee = parseFloat(document.getElementById('gasActualField').value) || 0;
+        }
+    } else {
+        rentalFee = parseFloat(document.getElementById('rentalCarFee').value) || 0;
+    }
+
+    const totalFee = highwayFee + gasFee + rentalFee;
+    document.getElementById('resTotal').innerText = Math.round(totalFee).toLocaleString();
+
+    let detailHtml = "";
+    let metaHtml = "";
+
+    if (carType === 'mycar') {
+        const passengers = parseFloat(document.getElementById('passengerCount').value) || 0;
+        const totalShares = passengers + 0.5;
+
+        if (totalShares <= 0) {
+            detailHtml = "<p>人数を正しく入力してください。</p>";
+        } else {
+            const perPassenger = totalFee / totalShares;
+            const perDriver = perPassenger * 0.5;
+
+            metaHtml = `※分母: ${totalShares}人分 (同乗者${passengers}人 + ドライバー0.5人)`;
+            detailHtml = `
+                <p><span>🚘 ドライバー負担 (0.5人分):</span> <span class="highlight">${Math.round(perDriver).toLocaleString()} 円</span></p>
+                <p><span>👤 同乗者1人あたり負担:</span> <span class="highlight">${Math.round(perPassenger).toLocaleString()} 円</span></p>
+            `;
+        }
+    } else {
+        const totalPeople = parseInt(document.getElementById('passengerCount').value) || 0;
+        if (totalPeople <= 0) {
+            detailHtml = "<p>人数を正しく入力してください。</p>";
+        } else {
+            const perPerson = totalFee / totalPeople;
+            metaHtml = `※一律人数割り (${totalPeople}人)`;
+            detailHtml = `
+                <p><span>👤 1人あたりの負担:</span> <span class="highlight">${Math.round(perPerson).toLocaleString()} 円</span></p>
+            `;
+        }
+    }
+
+    document.getElementById('resMeta').innerHTML = metaHtml;
+    document.getElementById('resDetail').innerHTML = detailHtml;
+    document.getElementById('resultArea').style.display = "block";
+}
+</script>
+
+</body>
+</html>
