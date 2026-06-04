@@ -19,7 +19,6 @@
             --color-input-bg: #ffffff;
             --color-border: #cfe0d6;
             --color-copy-btn: #3a5a40;
-            --color-copy-btn-hover: #2f4834;
         }
 
         body {
@@ -233,25 +232,31 @@
             background-color: var(--color-accent-hover);
         }
 
-        /* コピーボタンのスタイル */
-        button.btn-copy {
-            width: 100%;
-            padding: 14px;
-            border: none;
+        /* 新しいテキストコピー用表示エリアのスタイル */
+        .copy-info-box {
+            margin-top: 18px;
+            background-color: #fafafa;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            letter-spacing: 0.5px;
-            background-color: var(--color-copy-btn);
-            color: white;
-            margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(58, 90, 64, 0.15);
+            border: 2px dashed var(--color-accent);
         }
 
-        button.btn-copy:hover {
-            background-color: var(--color-copy-btn-hover);
+        /* ⚠️ここがポイント：スマホで長押しした時に確実に全選択させる設定 */
+        .copy-target-text {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #222;
+            white-space: pre-wrap; /* 改行を有効にする */
+            word-break: break-all;
+            
+            -webkit-user-select: all; /* Safari (iPhone) でタップ/長押し時に全選択 */
+            -moz-user-select: all;    /* Firefox */
+            -ms-user-select: all;     /* IE */
+            user-select: all;         /* Chrome / Android で全選択 */
         }
 
         button:active {
@@ -412,7 +417,12 @@
             <hr>
             <div id="resDetail"></div>
             
-            <button class="btn-copy" id="copyBtn" onclick="copyResultToClipboard()">📋 クリップボードにコピー</button>
+            <div class="copy-info-box">
+                <label style="font-size: 0.8rem; color: #4a7c59; margin-bottom: 6px; display: block; font-weight: bold;">
+                    👇 下の白枠内を「長押し」または「ポンとタップ」すると全選択されます。そのままコピーしてLINEに貼ってください
+                </label>
+                <div id="targetTextBoard" class="copy-target-text"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -428,8 +438,6 @@ liff.init({
 }).catch((err) => {
     console.error("LIFF初期化エラー:", err);
 });
-
-let copyTextData = "";
 
 function toggleCarType() {
     const carType = document.querySelector('input[name="carType"]:checked').value;
@@ -491,9 +499,7 @@ function calculate() {
 
     let detailHtml = "";
     let metaHtml = "";
-
-    // ボタンのテキストをリセット
-    document.getElementById('copyBtn').innerText = "📋 クリップボードにコピー";
+    let copyTextData = "";
 
     if (carType === 'mycar') {
         const passengers = parseFloat(document.getElementById('passengerCount').value) || 0;
@@ -547,38 +553,12 @@ function calculate() {
 
     document.getElementById('resMeta').innerHTML = metaHtml;
     document.getElementById('resDetail').innerHTML = detailHtml;
+    
+    // コピー用の白いボードに文字を注入
+    document.getElementById('targetTextBoard').innerText = copyTextData;
+    
+    // 表示フラグをオン
     document.getElementById('resultArea').style.display = "block";
-}
-
-function copyResultToClipboard() {
-    if (!copyTextData) return;
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(copyTextData).then(() => {
-            document.getElementById('copyBtn').innerText = "✅ コピー完了！";
-        }).catch((err) => {
-            console.error("コピー失敗:", err);
-            fallbackCopy(copyTextData);
-        });
-    } else {
-        fallbackCopy(copyTextData);
-    }
-}
-
-function fallbackCopy(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    try {
-        document.execCommand("copy");
-        document.getElementById('copyBtn').innerText = "✅ コピー完了！";
-    } catch (err) {
-        alert("コピーできませんでした。結果エリアのテキストを選択してコピーしてください。");
-    }
-    document.body.removeChild(textArea);
 }
 </script>
 
