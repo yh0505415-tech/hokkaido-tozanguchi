@@ -233,7 +233,7 @@
             background-color: var(--color-accent-hover);
         }
 
-        /* いつでもタップできるよう配置を最適化したコピーボタン */
+        /* コピーボタンのスタイル */
         button.btn-copy {
             width: 100%;
             padding: 14px;
@@ -412,7 +412,7 @@
             <hr>
             <div id="resDetail"></div>
             
-            <button class="btn-copy" id="copyBtn" onclick="copyResultToClipboard()">📋 結果をコピーしてLINEに貼る</button>
+            <button class="btn-copy" id="copyBtn" onclick="copyResultToClipboard()">📋 クリップボードにコピー</button>
         </div>
     </div>
 </div>
@@ -492,7 +492,8 @@ function calculate() {
     let detailHtml = "";
     let metaHtml = "";
 
-    document.getElementById('copyBtn').innerText = "📋 結果をコピーしてLINEに貼る";
+    // ボタンのテキストをリセット
+    document.getElementById('copyBtn').innerText = "📋 クリップボードにコピー";
 
     if (carType === 'mycar') {
         const passengers = parseFloat(document.getElementById('passengerCount').value) || 0;
@@ -546,8 +547,6 @@ function calculate() {
 
     document.getElementById('resMeta').innerHTML = metaHtml;
     document.getElementById('resDetail').innerHTML = detailHtml;
-    
-    // 計算完了と同時に、隠れていた結果エリア（ボタン含む）を一気にフェードイン表示
     document.getElementById('resultArea').style.display = "block";
 }
 
