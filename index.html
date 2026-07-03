@@ -209,6 +209,13 @@
             text-align: center;
         }
 
+        /* 強調用テキストスタイル */
+        .text-highlight {
+            color: var(--color-highlight);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
         .attention-note {
             font-size: 0.75rem;
             color: var(--color-highlight);
@@ -364,7 +371,7 @@
 
         <div class="section-box">
             <div class="form-group">
-                <label id="memberLabel">登山メンバー人数 (ドライバー除く)</label>
+                <label id="memberLabel">同乗者 <span class="text-highlight">（※ドライバー除く）</span></label>
                 <input type="number" id="passengerCount" value="3" min="0" inputmode="numeric">
             </div>
 
@@ -458,14 +465,15 @@ function toggleCarType() {
     const labelMycar = document.getElementById('labelMycar');
     const labelRental = document.getElementById('labelRental');
     
+    // 切り替え時にもHTML構造（強調デザイン）を維持して上書き
     if (carType === 'mycar') {
         rentalFeeGroup.classList.add('hidden');
-        memberLabel.innerText = "登山メンバー人数 (ドライバー除く)";
+        memberLabel.innerHTML = '登山メンバー人数 <span class="text-highlight">（※ドライバー除く）</span>';
         labelMycar.classList.add('active');
         labelRental.classList.remove('active');
     } else {
         rentalFeeGroup.classList.remove('hidden');
-        memberLabel.innerText = "全体の合計人数 (ドライバー含む)";
+        memberLabel.innerHTML = '全体の合計人数 <span class="text-highlight">（※ドライバー含む）</span>';
         labelMycar.classList.remove('active');
         labelRental.classList.add('active');
     }
