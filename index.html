@@ -209,6 +209,17 @@
             text-align: center;
         }
 
+        .attention-note {
+            font-size: 0.75rem;
+            color: var(--color-highlight);
+            margin-bottom: 10px;
+            font-weight: 700;
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -353,7 +364,7 @@
 
         <div class="section-box">
             <div class="form-group">
-                <label id="memberLabel">人数 (ドライバー除く)</label>
+                <label id="memberLabel">登山メンバー人数 (ドライバー除く)</label>
                 <input type="number" id="passengerCount" value="3" min="0" inputmode="numeric">
             </div>
 
@@ -368,7 +379,7 @@
             </div>
 
             <div class="form-group">
-                <label>その他諸経費 (駐車場代など) (円)</label>
+                <label>その他諸経費 (駐車場代・温泉代など) (円)</label>
                 <input type="number" id="otherFee" value="0" min="0" inputmode="numeric">
             </div>
         </div>
@@ -383,10 +394,14 @@
             </div>
 
             <div id="gasEstimateGroup" class="form-group">
+                <div class="attention-note">
+                    <span>⚠️</span>
+                    <span>走行距離は片道ではなく、必ず【往復の総走行距離】を入力してください。</span>
+                </div>
                 <div class="grid-3col">
                     <div>
                         <label>走行距離(km)</label>
-                        <input type="number" id="distance" value="0" min="0" inputmode="numeric">
+                        <input type="number" id="distance" value="0" min="0" inputmode="numeric" placeholder="往復距離">
                     </div>
                     <div>
                         <label>燃費(km/L)</label>
@@ -445,7 +460,7 @@ function toggleCarType() {
     
     if (carType === 'mycar') {
         rentalFeeGroup.classList.add('hidden');
-        memberLabel.innerText = "人数 (ドライバー除く)";
+        memberLabel.innerText = "登山メンバー人数 (ドライバー除く)";
         labelMycar.classList.add('active');
         labelRental.classList.remove('active');
     } else {
